@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoPro Booking System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #1a1a1a;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #aaa;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .service-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .service-card {
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .service-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .service-card.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .date-picker {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .date-picker input {
+            flex: 1;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .confirmation {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .confirmation h2 {
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        
+        .booking-details {
+            text-align: left;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+            }
+            .date-picker {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 VideoPro Productions</h1>
+            <p>Professional Video Production Booking System</p>
+        </div>
+        
+        <div class="content">
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label for="name">Client Name *</label>
+                    <input type="text" id="name" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" required placeholder="your@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" required placeholder="(123) 456-7890">
+                </div>
+                
+                <div class="form-group">
+                    <label>Select Service Type</label>
+                    <div class="service-options" id="serviceOptions">
+                        <div class="service-card" data-service="wedding">
+                            <h3>💒 Wedding Video</h3>
+                            <p>Full day coverage + highlight reel</p>
+                            <p><strong>$1,500</strong></p>
+                        </div>
+                        <div class="service-card" data-service="corporate">
+                            <h3>💼 Corporate Video</h3>
+                            <p>Promotional & training videos</p>
+                            <p><strong>$2,000</strong></p>
+                        </div>
+                        <div class="service-card" data-service="event">
+                            <h3>🎉 Event Coverage</h3>
+                            <p>Conferences & special events</p>
+                            <p><strong>$1,200</strong></p>
+                        </div>
+                        <div class="service-card" data-service="commercial">
+                            <h3>📺 Commercial</h3>
+                            <p>TV & online advertisements</p>
+                            <p><strong>$2,500</strong></p>
+                        </div>
+                    </div>
+                    <input type="hidden" id="selectedService" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Project Date Range</label>
+                    <div class="date-picker">
+                        <div>
+                            <label for="startDate">Start Date *</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div>
+                            <label for="endDate">End Date *</label>
+                            <input type="date" id="endDate" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">Project Location</label>
+                    <input type="text" id="location" placeholder="Venue or address">
+                </div>
+                
+                <div class="form-group">
+                    <label for="details">Project Details</label>
+                    <textarea id="details" rows="4" placeholder="Tell us about your project, special requirements, etc."></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">📅 Book Now</button>
+            </form>
+            
+            <div id="confirmation" class="confirmation">
+                <h2>✅ Booking Confirmed!</h2>
+                <p>Thank you for booking with VideoPro Productions!</p>
+                <div id="bookingDetails" class="booking-details">
+                    <!-- Booking details will appear here -->
+                </div>
+                <p>We'll contact you within 24 hours to confirm details.</p>
+                <button onclick="newBooking()" style="margin-top: 20px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Make Another Booking
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Service selection
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                document.getElementById('selectedService').value = card.dataset.service;
+            });
+        });
+
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('startDate').min = today;
+        document.getElementById('endDate').min = today;
+
+        // Update end date min when start date changes
+        document.getElementById('startDate').addEventListener('change', function() {
+            document.getElementById('endDate').min = this.value;
+        });
+
+        // Form submission
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                service: document.getElementById('selectedService').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                location: document.getElementById('location').value,
+                details: document.getElementById('details').value,
+                bookingId: 'VP' + Date.now().toString().slice(-6),
+                date: new Date().toLocaleDateString()
+            };
+
+            // Display confirmation
+            document.getElementById('bookingForm').style.display = 'none';
+            document.getElementById('confirmation').style.display = 'block';
+            
+            // Show booking details
+            const detailsDiv = document.getElementById('bookingDetails');
+            detailsDiv.innerHTML = `
+                <p><strong>Booking ID:</strong> ${formData.bookingId}</p>
+                <p><strong>Client:</strong> ${formData.name}</p>
+                <p><strong>Service:</strong> ${formData.service.charAt(0).toUpperCase() + formData.service.slice(1)} Video</p>
+                <p><strong>Dates:</strong> ${formData.startDate} to ${formData.endDate}</p>
+                <p><strong>Location:</strong> ${formData.location || 'To be confirmed'}</p>
+                <p><strong>Email:</strong> ${formData.email}</p>
+                <p><strong>Phone:</strong> ${formData.phone}</p>
+                <p><strong>Submitted:</strong> ${formData.date}</p>
+            `;
+
+            // Save to localStorage (for demo purposes)
+            saveBooking(formData);
+            
+            // In a real system, you would send this data to a server
+            console.log('Booking Data:', formData);
+            
+            // Optional: Send email notification (requires backend)
+            // sendEmailNotification(formData);
+        });
+
+        // Save booking to localStorage (temporary storage)
+        function saveBooking(booking) {
+            let bookings = JSON.parse(localStorage.getItem('videoproBookings') || '[]');
+            bookings.push(booking);
+            localStorage.setItem('videoproBookings', JSON.stringify(bookings));
+        }
+
+        // Create new booking
+        function newBooking() {
+            document.getElementById('bookingForm').reset();
+            document.getElementById('bookingForm').style.display = 'block';
+            document.getElementById('confirmation').style.display = 'none';
+            document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('selectedService').value = '';
+        }
+
+        // Auto-format phone number
+        document.getElementById('phone').addEventListener('input', function(e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+    </script>
+</body>
+</html>
